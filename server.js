@@ -18,6 +18,7 @@ db.once('open', function () {
 }); // L11
 
 const userSchema = new mongoose.Schema({ // L11
+    userId: String,
     firstName: String,
     lastName: String,
     email: String,
@@ -50,6 +51,7 @@ app.post('/clientTable', (req, res) => {
 
     console.log(`POST /clientTable: ${JSON.stringify(req.body)}`); // L11
     const newUser = new monUser();
+    newUser.userId = req.body.userId;
     newUser.firstName = req.body.firstName;
     newUser.lastName = req.body.lastName;
     newUser.email = req.body.email;
@@ -90,6 +92,7 @@ app.post('/clientTable', (req, res) => {
 
 app.get('/edit/:clientId', (req, res) => { // Routes to edit page
 
+    let userID = req.params.userId;
     let userFirstName = req.params.firstName; // this is to access value of parameter // L11
     let userLastName = req.params.lastName;
     let userEmail = req.params.email;
@@ -97,6 +100,7 @@ app.get('/edit/:clientId', (req, res) => { // Routes to edit page
     let userAge = req.params.age;
     console.log(`GET /edit/:clientId ${JSON.stringify(req.params)}`);
     user.findOne(
+        {userId: userID},
         {firstName: userFirstName},
         {lastName: userLastName},
         {email: userEmail},
@@ -104,7 +108,7 @@ app.get('/edit/:clientId', (req, res) => { // Routes to edit page
         {age: userAge}), (err, data) => {
         if (err) return console.log(`opps! ${err}`);
         console.log(`data -- ${JSON.stringify(data)}`);
-        let returnData = `First Name : ${userFirstName} Last Name : ${userLastName}  Email : ${userEmail} Address : ${userAddress} Age : ${userAge}`;
+        let returnData = `User ID : ${userID} First Name : ${userFirstName} Last Name : ${userLastName}  Email : ${userEmail} Address : ${userAddress} Age : ${userAge}`;
         console.log(returnData);
         res.send(returnData);
     }; // L11
@@ -130,12 +134,14 @@ app.get('/edit/:clientId', (req, res) => { // Routes to edit page
 app.post('/edit/:clientId', (req, res) => {
 
     console.log(`POST /edit: ${JSON.stringify(req.body)}`); // L11
+    let matchedID = req.body.userId;
     let matchedFirstName = req.body.firstName;
     let matchedLastName = req.body.lastName;
     let matchedEmail = req.body.email;
     let matchedAddress = req.body.address;
     let matchedAge = req.body.age;
     monUser.findOneAndUpdate(
+        {userId: matchedID},
         {firstName: matchedFirstName},
         {lastName: matchedLastName},
         {email: matchedEmail},
@@ -144,7 +150,7 @@ app.post('/edit/:clientId', (req, res) => {
         {new: true}, (err, data) => {
         if(err) return console.log(`Oops! ${err}`);
         console.log(`data -- ${data.role}`);
-        let returnData = `New Fist Name : ${matchedFirstName} New Last Name : ${matchedLastName} New Email : ${matchedEmail} New Address : ${matchedAddress} New Age : ${matchedAge}`;
+        let returnData = ` New user ID : ${matchedID} New First Name : ${matchedFirstName} New Last Name : ${matchedLastName} New Email : ${matchedEmail} New Address : ${matchedAddress} New Age : ${matchedAge}`;
         console.log(returnData);
         res.send(returnData);
     }; // L11
@@ -182,28 +188,21 @@ app.post('/edit/:clientId', (req, res) => {
 
 app.get('/delete/:clientId', (req, res) => {
 
-    console.log(`POST /delete: ${JSON.stringify(req.body)}`); // L11
-    let matchedFirstName = req.body.firstName;
-    let matchedLastName = req.body.lastName;
-    let matchedEmail = req.body.email;
-    let matchedAddress = req.body.address;
-    let matchedAge = req.body.age;
-    monUser.findOneAndDelete(
-        {firstName: matchedFirstName},
-        {lastName: matchedLastName},
-        {email: matchedEmail},
-        {address: matchedAddress},
-        {age: matchedAge}, (err, data) => {
-        if (err) return console.log(`data -- ${JSON.stringify(data)}`);
-        let returnData = `First Name : ${matchedFirstName} Last Name : ${matchedLastName} Email : ${matchedEmail} Address : ${matchedAddress} Age : ${matchedAge} Removed data : ${data}`;
-        console.log(returnData);
-        res.send(returnData);
-    }); // L11
+        console.log(`POST /delete/:clientId ${JSON.stringify(req.params)}`); // L11
+        let matchedID = req.params.clientId;
+        monUser.findOneAndDelete(
+            {clientId: matchedID},
+            (err, data) => {
+                if (err) return console.log(`data -- ${JSON.stringify(data)}`);
+                let returnData = `User Removed : ${matchedID} Removed data : ${data}`;
+                console.log(returnData);
+                res.send(returnData);
+            }); // L11
 
     let clientId = req.params.clientId;
     let forEachCallBack = (index, jsonData) => {
         jsonData.clients.splice(index,1);
-        console.log(jsonData);
+        // console.log(jsonData);
         res.redirect('/clientTable');
         fs.writeFile(jsonFile, JSON.stringify(jsonData), (err) => {
             if (err) throw err;
@@ -222,6 +221,59 @@ app.get('/delete/:clientId', (req, res) => {
         });
     });
 });
+
+// app.post('/delete/:clientId', (req, res) => {
+//     console.log(`POST /delete/:clientId ${JSON.stringify(req.params)}`); // L11
+//     let matchedID = req.params.clientId;
+//     monUser.findOneAndDelete(
+//         {clientId: matchedID},
+//         (err, data) => {
+//             if (err) return console.log(`data -- ${JSON.stringify(data)}`);
+//             let returnData = `User Removed : ${matchedID} Removed data : ${data}`;
+//             console.log(returnData);
+//             res.send(returnData);
+//         }); // L11
+// });
+
+// Test Mongo Delete code below
+// app.post('/delete/:clientId', (req, res) => {
+//     console.log(`POST /delete/:clientId ${JSON.stringify(req.body)}`); // L11
+//     let matchedID = req.params.clientId;
+//     monUser.findOneAndDelete(
+//         {clientId: matchedID},
+//         (err, data) => {
+//             if (err) return console.log(`data -- ${JSON.stringify(data)}`);
+//             let returnData = `User Removed : ${matchedID} Removed data : ${data}`;
+//             console.log(returnData);
+//             res.send(returnData);
+//         }); // L11
+// });
+
+// Test Mongo Delete code below
+// console.log(`POST /delete/:clientId: ${JSON.stringify(req.body)}`); // L11
+// let matchedID = req.params.clientId;
+// // let matchedFirstName = req.body.firstName;
+// // let matchedLastName = req.body.lastName;
+// // let matchedEmail = req.body.email;
+// // let matchedAddress = req.body.address;
+// // let matchedAge = req.body.age;
+// monUser.findOneAndDelete(
+// // monUser._deleteMany(
+//     {userId: matchedID},
+//     // {firstName: matchedFirstName},
+//     // {lastName: matchedLastName},
+//     // {email: matchedEmail},
+//     // {address: matchedAddress},
+//     // {age: matchedAge},
+//     (err, data) => {
+//     if (err) return console.log(`data -- ${JSON.stringify(data)}`);
+//     let returnData = `User Removed : ${matchedID} Removed data : ${data}`;
+//     console.log(returnData);
+//     res.send(returnData);
+//        // let returnMsg = `User Removed : ${matchedID} removed data : ${data}`;
+//        //  console.log(returnMsg);
+//        //  res.send(returnMsg);
+// }); // L11
 
 app.listen(5000, () => {
     console.log('Listening on port 5000');
