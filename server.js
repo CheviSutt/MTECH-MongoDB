@@ -59,7 +59,7 @@ app.post('/clientTable', (req, res) => {
     newUser.age = req.body.age;
     newUser.save((err, data) => {
         if (err) {
-            return console.log(`new user save: ${data}`);
+            return console.log(err);
             res.send(`done ${data}`);
         }
     }); // L11
@@ -197,6 +197,7 @@ app.get('/delete/:clientId', (req, res) => {
                 let returnData = `User Removed : ${matchedID} Removed data : ${data}`;
                 console.log(returnData);
                 res.send(returnData);
+               // res.end(returnData);
             }); // L11
 
     let clientId = req.params.clientId;
@@ -207,7 +208,7 @@ app.get('/delete/:clientId', (req, res) => {
         fs.writeFile(jsonFile, JSON.stringify(jsonData), (err) => {
             if (err) throw err;
         });
-    }
+    };
 
     fs.readFile(jsonFile, 'utf8', (err, data) => {
         if (err) console.log(err);
