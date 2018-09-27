@@ -23,14 +23,13 @@ const userSchema = new mongoose.Schema({ // L11
     lastName: String,
     email: String,
     address: String,
-    Age: String
+    Age: String,
     // age: { type: Number, min: 18, max: 70 },
     // createDate: {type: Date, default: Date.now}
 }); // L11
 
-// const monUser = mongoose.model('userCollection', userSchema); // userCollection is the db collection name // L11
-const monUser = mongoose.model('mongoClientsMTECH', userSchema); // userCollection is the db collection name // L11
-
+const monUser = mongoose.model('userCollection', userSchema); // userCollection is the db collection name // L11
+//const monUser = mongoose.model('mongoClientsMTECH', userSchema); // userCollection is the db collection name // L11
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -39,19 +38,17 @@ app.use('/', express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.get('/clientTable', (req, res) => {
-    fs.readFile(jsonFile, 'utf8', (err, data) => {
+app.get('/clientTable', (req, res) => { // /clientTable
+    //pulls back all docs in the userCollection
+    monUser.find({}, (err, docs) => {
         if (err) console.log(err);
-        let jsonData = JSON.parse(data);
-        res.render('clientTable', {clients: jsonData.clients});
+        res.render('clientTable', {clients: docs});
     });
 });
 
 app.post('/clientTable', (req, res) => {
-
     console.log(`POST /clientTable: ${JSON.stringify(req.body)}`); // L11
     const newUser = new monUser();
-    newUser.userId = req.body.userId;
     newUser.firstName = req.body.firstName;
     newUser.lastName = req.body.lastName;
     newUser.email = req.body.email;
@@ -63,218 +60,56 @@ app.post('/clientTable', (req, res) => {
             res.send(`done ${data}`);
         }
     }); // L11
+}); // test Code
 
-    fs.readFile(jsonFile, 'utf8', (err, data) => { // reads clients,json
-    if (err) console.log(err);
-    let index = 0; // unique id
-    let jsonData = JSON.parse(data);
-    let clientObj = {
-        userId: 0, // unique id
-        //userId: req.body.userId,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        address: req.body.address,
-        age: req.body.age
-    };
-
-    jsonData.clients.forEach(user => { // unique id block
-        if (user.userId === index) index++;
-    });
-    clientObj.userId = Number(index); // unique id
-
-    jsonData.clients.push(clientObj);
-    res.render('clientTable', {clients: jsonData.clients}); // rendering clientTable html
-
-    fs.writeFile(jsonFile, JSON.stringify(jsonData), 'utf8', err => console.log(err));
-    });
-});
-
-app.get('/edit/:clientId', (req, res) => { // Routes to edit page
-
-    let userID = req.params.userId;
-    let userFirstName = req.params.firstName; // this is to access value of parameter // L11
-    let userLastName = req.params.lastName;
-    let userEmail = req.params.email;
-    let userAddress = req.params.address;
-    let userAge = req.params.age;
-    console.log(`GET /edit/:clientId ${JSON.stringify(req.params)}`);
-    user.findOne(
-        {userId: userID},
-        {firstName: userFirstName},
-        {lastName: userLastName},
-        {email: userEmail},
-        {address: userAddress},
-        {age: userAge}), (err, data) => {
-        if (err) return console.log(`opps! ${err}`);
-        console.log(`data -- ${JSON.stringify(data)}`);
-        let returnData = `User ID : ${userID} First Name : ${userFirstName} Last Name : ${userLastName}  Email : ${userEmail} Address : ${userAddress} Age : ${userAge}`;
-        console.log(returnData);
-        res.send(returnData);
-    }; // L11
-
-    let clientId = req.params.clientId;
-    let forEachCallBack = (index, jsonData) => {
-        console.log(jsonData.clients[index]);
-        res.render('edit', {client: jsonData.clients[index]}); // .userId to populate single user
-    }
-    fs.readFile(jsonFile, 'utf8', (err, data) => {
+app.get('/edit/:clientId', (req, res) => { // /edit/*clientID* Page
+    //since this is a get request, all we need to get is the user data
+    //so first, we grab the clientId from the params
+    const clientId = req.params.clientId;
+    //after that, we can then search the mongo data base to find the user
+    //we use the 'findOne()' method to search until found model
+    //that way we dont search the entire thing, just what we need
+    monUser.findOne({_id:clientId}, (err, doc) => {
         if (err) console.log(err);
-
-        let jsonData = JSON.parse(data);
-
-        jsonData.clients.forEach((user, index) => {
-            if (Number(user.userId) === Number(clientId)) {
-                forEachCallBack(index, jsonData);
-            }
-        });
+        //let returnData = `user name : ${clientId} doc : ${doc}`;
+        res.send(`EditPage | User were editing: ${doc}`);
+        //res.send('/edit/:clientId', _id.clientId ${doc});
     });
 });
 
 app.post('/edit/:clientId', (req, res) => {
-
-    console.log(`POST /edit: ${JSON.stringify(req.body)}`); // L11
-    let matchedID = req.body.userId;
-    let matchedFirstName = req.body.firstName;
-    let matchedLastName = req.body.lastName;
-    let matchedEmail = req.body.email;
-    let matchedAddress = req.body.address;
-    let matchedAge = req.body.age;
-    monUser.findOneAndUpdate(
-        {userId: matchedID},
-        {firstName: matchedFirstName},
-        {lastName: matchedLastName},
-        {email: matchedEmail},
-        {address: matchedAddress},
-        {age: matchedAge}),
-        {new: true}, (err, data) => {
-        if(err) return console.log(`Oops! ${err}`);
-        console.log(`data -- ${data.role}`);
-        let returnData = ` New user ID : ${matchedID} New First Name : ${matchedFirstName} New Last Name : ${matchedLastName} New Email : ${matchedEmail} New Address : ${matchedAddress} New Age : ${matchedAge}`;
-        console.log(returnData);
-        res.send(returnData);
-    }; // L11
-
-    //console.log(req);
-    let clientId = req.params.clientId;
-    let user = {
-        userId: req.body.userId,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        age: req.body.age
+    //first, lets grab the clientId that we passed through:
+    const clientID = req.params.clientId;
+    //to make our lives easier, and not have to define variables for each field
+    //we can just make an object to pass through
+    //we can also define body so we dont have to type 'req.body' so many times
+    const body = req.body;
+    const updatedUserData = {
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email,
+        age: body.age
     };
-
-    let forEachCallBack = (index, jsonData) => {
-        jsonData.clients[index] = user;
-        fs.writeFile(jsonFile, JSON.stringify(jsonData), (err) => {
-            if (err) throw err;
-        });
-        res.render('clientTable', {clients: jsonData.clients});
-    }
-
-    fs.readFile(jsonFile, 'utf8', (err, data) => {
+    //so instead of doing multiple fields and guessing to find the correct user,
+    //you can use the clientId we passed through to search the database.
+    monUser.findOneAndUpdate({_id:clientID}, updatedUserData, {new: true}, (err, data) => {
         if (err) console.log(err);
-
-        let jsonData = JSON.parse(data);
-
-        jsonData.clients.forEach((user, index) => {
-            if (Number(user.userId) === Number(clientId)) {
-                forEachCallBack(index, jsonData);
-            }
-        });
+        res.send(`Return data: ${updatedUserData}`);
     });
 });
 
 app.get('/delete/:clientId', (req, res) => {
-
-        console.log(`POST /delete/:clientId ${JSON.stringify(req.params)}`); // L11
-        let matchedID = req.params.clientId;
-        monUser.findOneAndDelete(
-            {clientId: matchedID},
-            (err, data) => {
-                if (err) return console.log(`data -- ${JSON.stringify(data)}`);
-                let returnData = `User Removed : ${matchedID} Removed data : ${data}`;
-                console.log(returnData);
-                res.send(returnData);
-               // res.end(returnData);
-            }); // L11
-
-    let clientId = req.params.clientId;
-    let forEachCallBack = (index, jsonData) => {
-        jsonData.clients.splice(index,1);
-        // console.log(jsonData);
+    const clientId = req.params.clientId;
+    monUser.findOneAndDelete({'_id': clientId}, (err, data) => {
+        if (err) return console.log(`Oops! ${err}`);
         res.redirect('/clientTable');
-        fs.writeFile(jsonFile, JSON.stringify(jsonData), (err) => {
-            if (err) throw err;
-        });
-    };
-
-    fs.readFile(jsonFile, 'utf8', (err, data) => {
-        if (err) console.log(err);
-
-        let jsonData = JSON.parse(data);
-
-        jsonData.clients.forEach((user, index) => {
-            if (Number(user.userId) === Number(clientId)) {
-                forEachCallBack(index, jsonData);
-            }
-        });
+        //let returnData = `User Removed : ${clientId} Removed data : ${data}`;
+        //res.send(returnData);
+        //res.send(`/delete/:clientId: ${data}`);
+        //res.send('/delete/:clientId',{_id: data});
+        //res.send({_id: data});
     });
 });
-
-// app.post('/delete/:clientId', (req, res) => {
-//     console.log(`POST /delete/:clientId ${JSON.stringify(req.params)}`); // L11
-//     let matchedID = req.params.clientId;
-//     monUser.findOneAndDelete(
-//         {clientId: matchedID},
-//         (err, data) => {
-//             if (err) return console.log(`data -- ${JSON.stringify(data)}`);
-//             let returnData = `User Removed : ${matchedID} Removed data : ${data}`;
-//             console.log(returnData);
-//             res.send(returnData);
-//         }); // L11
-// });
-
-// Test Mongo Delete code below
-// app.post('/delete/:clientId', (req, res) => {
-//     console.log(`POST /delete/:clientId ${JSON.stringify(req.body)}`); // L11
-//     let matchedID = req.params.clientId;
-//     monUser.findOneAndDelete(
-//         {clientId: matchedID},
-//         (err, data) => {
-//             if (err) return console.log(`data -- ${JSON.stringify(data)}`);
-//             let returnData = `User Removed : ${matchedID} Removed data : ${data}`;
-//             console.log(returnData);
-//             res.send(returnData);
-//         }); // L11
-// });
-
-// Test Mongo Delete code below
-// console.log(`POST /delete/:clientId: ${JSON.stringify(req.body)}`); // L11
-// let matchedID = req.params.clientId;
-// // let matchedFirstName = req.body.firstName;
-// // let matchedLastName = req.body.lastName;
-// // let matchedEmail = req.body.email;
-// // let matchedAddress = req.body.address;
-// // let matchedAge = req.body.age;
-// monUser.findOneAndDelete(
-// // monUser._deleteMany(
-//     {userId: matchedID},
-//     // {firstName: matchedFirstName},
-//     // {lastName: matchedLastName},
-//     // {email: matchedEmail},
-//     // {address: matchedAddress},
-//     // {age: matchedAge},
-//     (err, data) => {
-//     if (err) return console.log(`data -- ${JSON.stringify(data)}`);
-//     let returnData = `User Removed : ${matchedID} Removed data : ${data}`;
-//     console.log(returnData);
-//     res.send(returnData);
-//        // let returnMsg = `User Removed : ${matchedID} removed data : ${data}`;
-//        //  console.log(returnMsg);
-//        //  res.send(returnMsg);
-// }); // L11
 
 app.listen(5000, () => {
     console.log('Listening on port 5000');
