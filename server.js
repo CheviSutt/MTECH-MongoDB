@@ -22,19 +22,17 @@ const monUser = mongoose.model('userCollection', userSchema); // userCollection 
 const app = express(); //
 const port = process.env.PORT || 5000; //
 app.use(express.urlencoded({ extended: true})); //
-//app.set('views', path.join(__dirname, 'views')); // may cause prob
 app.use(express.static(path.join(__dirname,'public'))); //
-app.set('view engine', 'pug'); // may cause prob
+app.set('view engine', 'pug');
 
-app.get('/', (req, res) => {
-    //pulls back all docs in the userCollection
+app.get('/', (req, res) => {  //pulls back all docs in the userCollection
     monUser.find({}, (err, docs) => {
         if (err) console.log(err);
         res.render('clientTable', {monUser: docs});
     });
 });
 
-app.get('/newClient', (req, res) => {
+app.get('/newClient', (req, res) => { // Renders the new client form
     res.render('newClient');
 });
 
@@ -62,9 +60,9 @@ app.get('/edit/:clientId', (req, res) => { // /edit/*clientID* Page
     //that way we dont search the entire thing, just what we need
     monUser.findOne({_id:clientId}, (err, doc) => {
         if (err) console.log(err);
-        res.send('edit', {user:doc}); // *sends the current user to be edited
+        res.render('edit', {user:doc}); // *sends the current user to be edited
     });
-}); // check uid // stop point from Library
+});
 
 app.post('/updateUser/:clientId', (req, res) => {  // *Updates edited User
     //first, lets grab the clientId that we passed through:
