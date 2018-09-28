@@ -1,42 +1,31 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const fs = require('fs');
-const bodyParser = require('body-parser');
-const path = require('path');
-const jsonFile = __dirname + '/clients.json';
+const express = require('express'); //
+const mongoose = require('mongoose'); //
 
-const app = express();
-const port = process.env.PORT || 5000; // L11
-app.use(express.json()); // L11
-app.use(express.urlencoded({ extended: true})); // L11
-mongoose.connect('mongodb://localhost/userManagement', {useNewUrlParser: true}); // userManagement is the db name // L11
+// const jsonFile = __dirname + '/clients.json'; // not used
 
-const db = mongoose.connection; // L11
-db.on('error', console.error.bind(console, 'connection error:')); // L11
-db.once('open', function () {
-    console.log('db connected');
-}); // L11
+mongoose.connect('mongodb://localhost/userManagement', {useNewUrlParser: true}); // userManagement is the db name
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => console.log('db connected'));
 
-const userSchema = new mongoose.Schema({ // L11
-    userId: String,
+const userSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     email: String,
     address: String,
-    Age: String,
-    // age: { type: Number, min: 18, max: 70 },
-    // createDate: {type: Date, default: Date.now}
-}); // L11
+    Age: Number,
+});
 
-const monUser = mongoose.model('userCollection', userSchema); // userCollection is the db collection name // L11
-//const monUser = mongoose.model('mongoClientsMTECH', userSchema); // userCollection is the db collection name // L11
+const monUser = mongoose.model('userCollection', userSchema); // userCollection is the db collection name
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+const app = express(); //
+const port = process.env.PORT || 5000; //
+const path = require('path'); //
+app.use(express.urlencoded({ extended: true})); //
+//app.set('views', path.join(__dirname, 'views')); // may cause prob
+app.use(express.static(path.join(__dirname,'public'))); //
+app.set('views', 'pug'); // may cause prob
 
-app.use('/', express.static('public'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/clientTable', (req, res) => { // /clientTable
     //pulls back all docs in the userCollection
@@ -112,7 +101,7 @@ app.get('/delete/:clientId', (req, res) => {
 });
 
 app.listen(5000, () => {
-    console.log('Listening on port 5000');
+    console.log(`Listening on port: ${port}`);
 });
 
 
