@@ -26,8 +26,7 @@ app.use(express.urlencoded({ extended: true})); //
 app.use(express.static(path.join(__dirname,'public'))); //
 app.set('views', 'pug'); // may cause prob
 
-
-app.get('/clientTable', (req, res) => { // /clientTable
+app.get('/', (req, res) => {
     //pulls back all docs in the userCollection
     monUser.find({}, (err, docs) => {
         if (err) console.log(err);
@@ -35,21 +34,24 @@ app.get('/clientTable', (req, res) => { // /clientTable
     });
 });
 
-app.post('/clientTable', (req, res) => {
-    console.log(`POST /clientTable: ${JSON.stringify(req.body)}`); // L11
+app.get('/newClient', (req, res) => {
+    res.render('newClient');
+});
+
+app.post('/newClient', (req, res) => {
     const newUser = new monUser();
+
     newUser.firstName = req.body.firstName;
     newUser.lastName = req.body.lastName;
     newUser.email = req.body.email;
     newUser.address = req.body.address;
     newUser.age = req.body.age;
-    newUser.save((err, data) => {
-        if (err) {
-            return console.log(err);
-            res.send(`done ${data}`);
-        }
-    }); // L11
-}); // test Code
+
+    newUser.save((err, data) => {  // Submit button newClient
+        if (err) console.error(err);
+        res.redirect('/');
+    });
+});
 
 app.get('/edit/:clientId', (req, res) => { // /edit/*clientID* Page
     //since this is a get request, all we need to get is the user data
@@ -60,11 +62,9 @@ app.get('/edit/:clientId', (req, res) => { // /edit/*clientID* Page
     //that way we dont search the entire thing, just what we need
     monUser.findOne({_id:clientId}, (err, doc) => {
         if (err) console.log(err);
-        //let returnData = `user name : ${clientId} doc : ${doc}`;
-        res.send(`EditPage | User were editing: ${doc}`);
-        //res.send('/edit/:clientId', _id.clientId ${doc});
+        res.send('edit', {monUser:doc});
     });
-});
+}); // check uid // stop point
 
 app.post('/edit/:clientId', (req, res) => {
     //first, lets grab the clientId that we passed through:
@@ -86,6 +86,22 @@ app.post('/edit/:clientId', (req, res) => {
         res.send(`Return data: ${updatedUserData}`);
     });
 });
+
+// app.post('/clientTable', (req, res) => {
+//     console.log(`POST /clientTable: ${JSON.stringify(req.body)}`); // L11
+//     const newUser = new monUser();
+//     newUser.firstName = req.body.firstName;
+//     newUser.lastName = req.body.lastName;
+//     newUser.email = req.body.email;
+//     newUser.address = req.body.address;
+//     newUser.age = req.body.age;
+//     newUser.save((err, data) => {
+//         if (err) {
+//             return console.log(err);
+//             res.send(`done ${data}`);
+//         }
+//     }); // L11
+// }); // test Code
 
 app.get('/delete/:clientId', (req, res) => {
     const clientId = req.params.clientId;

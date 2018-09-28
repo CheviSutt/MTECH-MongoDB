@@ -2,23 +2,23 @@ html
     body
         table
             tr
-                th User ID
                 th First Name
                 th Last Name
                 th Email
                 th Address
                 th Age
-            each client, index in clients
+            each monUser, index in monUser
                 tr
-                    td #{client.userId}
-                    td #{client.firstName}
-                    td #{client.lastName}
-                    td #{client.email}
-                    td #{client.address}
-                    td #{client.age}
+                    td #{monUser.firstName}
+                    td #{monUser.lastName}
+                    td #{monUser.email}
+                    td #{monUser.address}
+                    td #{monUser.age}
                         |
                         |
-                        a(href=`/edit/${client.userId}`) Edit
+                        a(href=`/edit/${monUser.userId}`) Edit
                         |
                         |
-                        a(href=`/delete/${client.userId}`) Delete
+                        a(href=`/delete/${monUser.userId}`) Delete
+        div
+            a(href="/newClient") New User

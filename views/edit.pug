@@ -8,20 +8,18 @@ html
                 th Email
                 th Age
             tr
-                form(action=`/edit/${client.userId}` method="post")
+                form(action=`/edit/${monUser._id}` method="post")
                     td
-                        input(placeholder="UserID" type="text" name="userId" value=client.userId)
+                        input(placeholder="First Name" type="text" name="firstName" value=`${monUser.firstName}`)
                     td
-                        input(placeholder="First Name" type="text" name="firstName" value=client.firstName)
+                        input(placeholder="Last Name" type="text" name="lastName" value=`${monUser.lastName}`)
                     td
-                        input(placeholder="Last Name" type="text" name="lastName" value=client.lastName)
+                        input(placeholder="Email" type="text" name="email" value=`${monUser.email}`)
                     td
-                        input(placeholder="Email" type="text" name="email" value=client.email)
-                    td
-                        input(placeholder="Age" type="text" name="age" value=client.age)
+                        input(placeholder="Age" type="text" name="age" value=`${monUser.age}`)
                     td
                         input(type="submit" value="Save")
-        a(href="/clientTable") Return
+        a(href="/") Return
 
 
 
