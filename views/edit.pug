@@ -8,15 +8,17 @@ html
                 th Email
                 th Age
             tr
-                form(action=`/edit/${monUser._id}` method="post")
+                form(action=`/updateUser/${user._id}` method="post")
                     td
-                        input(placeholder="First Name" type="text" name="firstName" value=`${monUser.firstName}`)
+                        input(placeholder="First Name" type="text" name="firstName" value=`${user.firstName}`)
                     td
-                        input(placeholder="Last Name" type="text" name="lastName" value=`${monUser.lastName}`)
+                        input(placeholder="Last Name" type="text" name="lastName" value=`${user.lastName}`)
                     td
-                        input(placeholder="Email" type="text" name="email" value=`${monUser.email}`)
+                        input(placeholder="Email" type="text" name="email" value=`${user.email}`)
                     td
-                        input(placeholder="Age" type="text" name="age" value=`${monUser.age}`)
+                        input(placeholder="Address" type="text" name="address" value=`${user.address}`)
+                    td
+                        input(placeholder="Age" type="text" name="age" value=`${user.age}`)
                     td
                         input(type="submit" value="Save")
         a(href="/") Return

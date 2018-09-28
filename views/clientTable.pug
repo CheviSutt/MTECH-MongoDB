@@ -7,18 +7,18 @@ html
                 th Email
                 th Address
                 th Age
-            each monUser, index in monUser
+            each user, index in monUser
                 tr
-                    td #{monUser.firstName}
-                    td #{monUser.lastName}
-                    td #{monUser.email}
-                    td #{monUser.address}
-                    td #{monUser.age}
+                    td #{user.firstName}
+                    td #{user.lastName}
+                    td #{user.email}
+                    td #{user.address}
+                    td #{user.age}
                         |
                         |
-                        a(href=`/edit/${monUser.userId}`) Edit
+                        a(href=`/edit/${user._id}`) Edit
                         |
                         |
-                        a(href=`/delete/${monUser.userId}`) Delete
+                        a(href=`/delete/${user._id}`) Delete
         div
             a(href="/newClient") New User

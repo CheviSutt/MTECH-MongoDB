@@ -1,4 +1,5 @@
 const express = require('express'); //
+const path = require('path'); //
 const mongoose = require('mongoose'); //
 
 // const jsonFile = __dirname + '/clients.json'; // not used
@@ -20,17 +21,16 @@ const monUser = mongoose.model('userCollection', userSchema); // userCollection 
 
 const app = express(); //
 const port = process.env.PORT || 5000; //
-const path = require('path'); //
 app.use(express.urlencoded({ extended: true})); //
 //app.set('views', path.join(__dirname, 'views')); // may cause prob
 app.use(express.static(path.join(__dirname,'public'))); //
-app.set('views', 'pug'); // may cause prob
+app.set('view engine', 'pug'); // may cause prob
 
 app.get('/', (req, res) => {
     //pulls back all docs in the userCollection
     monUser.find({}, (err, docs) => {
         if (err) console.log(err);
-        res.render('clientTable', {clients: docs});
+        res.render('clientTable', {monUser: docs});
     });
 });
 
@@ -47,7 +47,7 @@ app.post('/newClient', (req, res) => {
     newUser.address = req.body.address;
     newUser.age = req.body.age;
 
-    newUser.save((err, data) => {  // Submit button newClient
+    newUser.save((err, data) => {  // *Submit button newClient
         if (err) console.error(err);
         res.redirect('/');
     });
@@ -62,13 +62,13 @@ app.get('/edit/:clientId', (req, res) => { // /edit/*clientID* Page
     //that way we dont search the entire thing, just what we need
     monUser.findOne({_id:clientId}, (err, doc) => {
         if (err) console.log(err);
-        res.send('edit', {monUser:doc});
+        res.send('edit', {user:doc}); // *sends the current user to be edited
     });
-}); // check uid // stop point
+}); // check uid // stop point from Library
 
-app.post('/edit/:clientId', (req, res) => {
+app.post('/updateUser/:clientId', (req, res) => {  // *Updates edited User
     //first, lets grab the clientId that we passed through:
-    const clientID = req.params.clientId;
+    const clientId = req.params.clientId;
     //to make our lives easier, and not have to define variables for each field
     //we can just make an object to pass through
     //we can also define body so we dont have to type 'req.body' so many times
@@ -77,42 +77,22 @@ app.post('/edit/:clientId', (req, res) => {
         firstName: body.firstName,
         lastName: body.lastName,
         email: body.email,
+        address: body.address,
         age: body.age
     };
     //so instead of doing multiple fields and guessing to find the correct user,
     //you can use the clientId we passed through to search the database.
-    monUser.findOneAndUpdate({_id:clientID}, updatedUserData, {new: true}, (err, data) => {
+    monUser.findOneAndUpdate({_id:clientId}, updatedUserData, {new: true}, (err, data) => {
         if (err) console.log(err);
-        res.send(`Return data: ${updatedUserData}`);
+        res.redirect('/'); // *Loads the updated edited User to the clientTable
     });
 });
-
-// app.post('/clientTable', (req, res) => {
-//     console.log(`POST /clientTable: ${JSON.stringify(req.body)}`); // L11
-//     const newUser = new monUser();
-//     newUser.firstName = req.body.firstName;
-//     newUser.lastName = req.body.lastName;
-//     newUser.email = req.body.email;
-//     newUser.address = req.body.address;
-//     newUser.age = req.body.age;
-//     newUser.save((err, data) => {
-//         if (err) {
-//             return console.log(err);
-//             res.send(`done ${data}`);
-//         }
-//     }); // L11
-// }); // test Code
 
 app.get('/delete/:clientId', (req, res) => {
     const clientId = req.params.clientId;
     monUser.findOneAndDelete({'_id': clientId}, (err, data) => {
         if (err) return console.log(`Oops! ${err}`);
-        res.redirect('/clientTable');
-        //let returnData = `User Removed : ${clientId} Removed data : ${data}`;
-        //res.send(returnData);
-        //res.send(`/delete/:clientId: ${data}`);
-        //res.send('/delete/:clientId',{_id: data});
-        //res.send({_id: data});
+        res.redirect('/');
     });
 });
 
