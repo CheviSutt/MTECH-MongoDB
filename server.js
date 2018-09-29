@@ -111,10 +111,16 @@ app.post('/searchFirstName', (req, res) => {
 });
 
 app.get('/sortA-Z', (req, res) => { // sort test
-    //const clientId = req.params.clientId;
-    monUser.find({}).sort({firstName: 1}, (err, data) => {
+    monUser.find({}).sort({firstName: 1}).exec((err, data) => {
         if (err) return console.log(`Oops! ${err}`);
-        res.render('/');
+        res.send(data);
+    });
+});
+
+app.get('/sortZ-A', (req, res) => { // sort test
+    monUser.find({}).sort({firstName: -1}).exec((err, data) => {
+        if (err) return console.log(`Oops! ${err}`);
+        res.send(data);
     });
 });
 
