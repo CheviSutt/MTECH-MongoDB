@@ -94,7 +94,13 @@ app.get('/delete/:clientId', (req, res) => {
     });
 });
 
-
+// app.post('/sortA-Z', (req, res) => { // sort test
+//     //const clientId = req.params.clientId;
+//     monUser.find({}).sort({firstName: 1}, (err, data) => {
+//         if (err) return console.log(`Oops! ${err}`);
+//         res.render('/');
+//     });
+// });
 
 app.listen(5000, () => {
     console.log(`Listening on port: ${port}`);
