@@ -1,6 +1,6 @@
-const express = require('express'); //
-const path = require('path'); //
-const mongoose = require('mongoose'); //
+const express = require('express');
+const path = require('path');
+const mongoose = require('mongoose');
 
 // const jsonFile = __dirname + '/clients.json'; // not used
 
@@ -19,13 +19,13 @@ const userSchema = new mongoose.Schema({
 
 const monUser = mongoose.model('userCollection', userSchema); // userCollection is the db collection name
 
-const app = express(); //
-const port = process.env.PORT || 5000; //
-app.use(express.urlencoded({ extended: true})); //
-app.use(express.static(path.join(__dirname,'public'))); //
+const app = express();
+const port = process.env.PORT || 5000;
+app.use(express.urlencoded({ extended: true}));
+app.use(express.static(path.join(__dirname,'public')));
 app.set('view engine', 'pug');
 
-app.get('/', (req, res) => {  //pulls back all docs in the userCollection
+app.get('/', (req, res) => {  // pulls back all docs in the userCollection
     monUser.find({}, (err, docs) => {
         if (err) console.log(err);
         res.render('clientTable', {monUser: docs});
@@ -69,7 +69,7 @@ app.post('/updateUser/:clientId', (req, res) => {  // *Updates edited User
     const clientId = req.params.clientId;
     //to make our lives easier, and not have to define variables for each field
     //we can just make an object to pass through
-    //we can also define body so we dont have to type 'req.body' so many times
+    //we can also define body so we don't have to type 'req.body' so many times
     const body = req.body;
     const updatedUserData = {
         firstName: body.firstName,
@@ -93,6 +93,8 @@ app.get('/delete/:clientId', (req, res) => {
         res.redirect('/');
     });
 });
+
+
 
 app.listen(5000, () => {
     console.log(`Listening on port: ${port}`);
