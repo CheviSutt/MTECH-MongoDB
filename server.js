@@ -94,6 +94,8 @@ app.get('/delete/:clientId', (req, res) => {
     });
 });
 
+// needs work => sort/search below
+
 app.get('/search', (req, res) => {
     const clientName = req.params.firstName;
     monUser.findOne({firstName:clientName}, (err, doc) => {
@@ -123,6 +125,8 @@ app.get('/sortZ-A', (req, res) => { // sort test
         res.send(data);
     });
 });
+// needs work => sort/search above
+
 
 app.listen(5000, () => {
     console.log(`Listening on port: ${port}`);
