@@ -94,7 +94,23 @@ app.get('/delete/:clientId', (req, res) => {
     });
 });
 
-// app.post('/sortA-Z', (req, res) => { // sort test
+app.get('/search', (req, res) => {
+    const clientName = req.params.firstName;
+    monUser.findOne({firstName:clientName}, (err, doc) => {
+        if (err) return console.log(`Oops! ${err}`);
+        res.render('search', {user:doc});
+    });
+});
+
+app.post('/searchFirstName', (req, res) => {
+    const clientId = req.params.clientId;
+    monUser.findOne({firstName:clientId}, (err, doc) => {
+        if (err) return console.log(`Oops! ${err}`);
+        res.render('search');
+    });
+});
+
+// app.get('/sortA-Z', (req, res) => { // sort test
 //     //const clientId = req.params.clientId;
 //     monUser.find({}).sort({firstName: 1}, (err, data) => {
 //         if (err) return console.log(`Oops! ${err}`);

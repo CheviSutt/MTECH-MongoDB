@@ -27,4 +27,9 @@ html
         div
             a(href="/sortZ-A") Sort Z-A
         div
-            a(href="/search") Search
+            form(action='/searchFirstName' method="post")
+                td
+                    input(placeholder="Search" type="text" name="firstName")
+                td
+                    input(type="submit" value="Search")
+
