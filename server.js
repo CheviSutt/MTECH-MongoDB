@@ -96,33 +96,30 @@ app.get('/delete/:clientId', (req, res) => {
 
 // needs work => sort/search below
 
-app.get('/search', (req, res) => {
-    const clientName = req.params.firstName;
-    monUser.findOne({firstName:clientName}, (err, doc) => {
+app.post('/search', (req, res) => {
+    const body = req.body;
+    console.log(body);
+    monUser.find({ $text:{$search: body.search} }, (err, data) => {
         if (err) return console.log(`Oops! ${err}`);
-        res.render('search', {user:doc});
+        // let result = JSON.parse(data);
+        //console.log(data);
+        res.render('search', {monUser: data});
     });
 });
 
-app.post('/searchFirstName', (req, res) => {
-    const clientId = req.params.clientId;
-    monUser.findOne({firstName:clientId}, (err, doc) => {
+app.get('/sortA-Z', (req, res) => {
+    monUser.find({}).sort({firstName: 1}).exec((err, data) => { // ascending
         if (err) return console.log(`Oops! ${err}`);
-        res.render('search');
-    });
-});
-
-app.get('/sortA-Z', (req, res) => { // sort test
-    monUser.find({}).sort({firstName: 1}).exec((err, data) => {
-        if (err) return console.log(`Oops! ${err}`);
-        res.send(data);
+        // res.send(data);
+        res.render('clientTable', {monUser: data});
     });
 });
 
 app.get('/sortZ-A', (req, res) => { // sort test
-    monUser.find({}).sort({firstName: -1}).exec((err, data) => {
+    monUser.find({}).sort({firstName: -1}).exec((err, data) => { // descending
         if (err) return console.log(`Oops! ${err}`);
-        res.send(data);
+        // res.send(data);
+        res.render('clientTable', {monUser: data});
     });
 });
 // needs work => sort/search above
