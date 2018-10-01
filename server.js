@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     lastName: String,
     email: String,
     address: String,
-    Age: Number,
+    age: String
 });
 
 const monUser = mongoose.model('userCollection', userSchema); // userCollection is the db collection name
@@ -94,8 +94,6 @@ app.get('/delete/:clientId', (req, res) => {
     });
 });
 
-// needs work => sort/search below
-
 app.post('/search', (req, res) => {
     const body = req.body;
     console.log(body);
@@ -122,8 +120,6 @@ app.get('/sortZ-A', (req, res) => { // sort test
         res.render('clientTable', {monUser: data});
     });
 });
-// needs work => sort/search above
-
 
 app.listen(5000, () => {
     console.log(`Listening on port: ${port}`);
