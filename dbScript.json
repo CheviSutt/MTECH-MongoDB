@@ -1,0 +1,11 @@
+{ "_id" : { "$oid" : "5bad9b467f975a4ffd6e137c" }, "firstName" : "Ethan", "lastName" : "Sutton", "email" : "cheviksutton@gmail.com", "address" : "Springville, Ut", "__v" : 0, "age" : "5" }
+{ "_id" : { "$oid" : "5bada033cac41650f4dc5ab8" }, "firstName" : "Laura", "lastName" : "Sutton", "email" : "cheviksutton@gmail.com", "address" : "Springville, UT", "__v" : 0, "age" : "25" }
+{ "_id" : { "$oid" : "5badaf9fd3df5652807db0b6" }, "firstName" : "Chevi", "lastName" : "Sutton", "email" : "cheviksutton@gmail.com", "address" : "Springville", "__v" : 0, "age" : "99" }
+{ "_id" : { "$oid" : "5bb03df442b1f17becf222ab" }, "firstName" : "Bob", "lastName" : "Sutton", "email" : "123@abc.com", "address" : "Vernal", "__v" : 0, "age" : "68" }
+{ "_id" : { "$oid" : "5bb2a6f672a4da8781aced9d" }, "firstName" : "Gavin ", "lastName" : "Sutton", "email" : "chevi.k@hotmail.com", "address" : "Pleasant Grove", "age" : "20", "__v" : 0 }
+{ "_id" : { "$oid" : "5bb2a71872a4da8781aced9e" }, "firstName" : "Alexis", "lastName" : "Sutton", "email" : "cheviksutton@gmail.com", "address" : "St. George", "age" : "17", "__v" : 0 }
+{ "_id" : { "$oid" : "5bb2a73972a4da8781aced9f" }, "firstName" : "Marty", "lastName" : "Sutton", "email" : "cheviksutton@gmail.com", "address" : "Orem, Utah", "age" : "58", "__v" : 0 }
+{ "_id" : { "$oid" : "5bb2b145e8c9af8813ef28af" }, "firstName" : "Phil", "lastName" : "Bollins", "email" : "123@abc.com", "address" : "Las Vegas", "age" : "45", "__v" : 0 }
+{ "_id" : { "$oid" : "5bb2b191e8c9af8813ef28b0" }, "firstName" : "Fran", "lastName" : "Sisco", "email" : "787@xyz.com", "address" : "California", "age" : "150", "__v" : 0 }
+{ "_id" : { "$oid" : "5bb2b1e2e8c9af8813ef28b1" }, "firstName" : "Lousie", "lastName" : "Diamond", "email" : "687@lmn.com", "address" : "Springville", "age" : "97", "__v" : 0 }
+{ "_id" : { "$oid" : "5bb2b28ce8c9af8813ef28b2" }, "firstName" : "Zed", "lastName" : "Lepplin", "email" : "zzz@xyz.com", "address" : "Birmingham, UK", "age" : "78", "__v" : 0 }
